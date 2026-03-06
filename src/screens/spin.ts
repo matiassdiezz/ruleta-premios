@@ -19,11 +19,11 @@ const PRIZE_ICONS: Record<string, string> = {
 }
 
 /**
- * Mounts spin chrome (prompt) and wires up the spin interaction.
+ * Immediately spins the wheel (no extra tap needed).
  */
 export function mountSpinChrome(
   bottom: HTMLElement,
-  wheelContainer: HTMLElement,
+  _wheelContainer: HTMLElement,
   wheelWrap: HTMLElement,
   prizes: Prize[],
   config: WheelConfig,
@@ -32,35 +32,17 @@ export function mountSpinChrome(
 ): void {
   bottom.innerHTML = ''
 
-  // Tap prompt (pill style, matches the welcome hint)
-  const prompt = document.createElement('p')
-  prompt.className = 'tap-to-spin wheel-fade-in'
-  prompt.textContent = 'Toca la rueda para girar'
-  bottom.appendChild(prompt)
+  const prizeIndex = selectPrize(prizes)
+  const prize = prizes[prizeIndex]
+  const angle = calcSpinAngle(prizeIndex, prizes.length)
 
-  let spinning = false
-  wheelContainer.style.cursor = 'pointer'
-
-  const handler = async () => {
-    if (spinning) return
-    spinning = true
-    wheelContainer.style.cursor = ''
-    prompt.classList.add('wheel-fade-out')
-
-    const prizeIndex = selectPrize(prizes)
-    const prize = prizes[prizeIndex]
-    const angle = calcSpinAngle(prizeIndex, prizes.length)
-
-    await spinWheel(wheelWrap, angle)
-
+  spinWheel(wheelWrap, angle).then(() => {
     // Save spin (fire and forget)
     onSave(prizeIndex)
 
     // Full-screen reveal
     showReveal(prize, config, onDone)
-  }
-
-  wheelContainer.addEventListener('click', handler, { once: true })
+  })
 }
 
 function showReveal(
