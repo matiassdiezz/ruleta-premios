@@ -1,14 +1,12 @@
 import type { WheelConfig } from '../config'
 
 /**
- * Mounts logo + CTA into the chrome slots. The wheel itself is persistent.
+ * Mounts logo + CTA into the chrome slots (no interaction — drag is handled by app).
  */
 export function mountWelcomeChrome(
   top: HTMLElement,
   bottom: HTMLElement,
   config: WheelConfig,
-  tapTarget: HTMLElement,
-  onTap: () => void,
 ): void {
   top.innerHTML = ''
   bottom.innerHTML = ''
@@ -35,14 +33,10 @@ export function mountWelcomeChrome(
   dot.className = 'wheel-hint-dot'
 
   const text = document.createElement('span')
-  text.textContent = 'Toca para jugar'
+  text.textContent = 'Arrastrá para girar'
 
   hint.append(dot, text)
   bottom.appendChild(hint)
-
-  // Full-screen tap
-  tapTarget.style.cursor = 'pointer'
-  tapTarget.addEventListener('click', onTap, { once: true })
 }
 
 /**

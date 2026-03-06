@@ -1,7 +1,5 @@
 import type { WheelConfig } from '../config'
 import type { Prize } from '../prizes'
-import { selectPrize } from '../prizes'
-import { calcSpinAngle, spinWheel } from '../wheel-renderer'
 
 const AUTO_RESET_MS = 7_000
 const CONFETTI_COUNT = 90
@@ -18,34 +16,7 @@ const PRIZE_ICONS: Record<string, string> = {
   'llavero-mannol': '🔑',
 }
 
-/**
- * Immediately spins the wheel (no extra tap needed).
- */
-export function mountSpinChrome(
-  bottom: HTMLElement,
-  _wheelContainer: HTMLElement,
-  wheelWrap: HTMLElement,
-  prizes: Prize[],
-  config: WheelConfig,
-  onSave: (prizeIndex: number) => Promise<void>,
-  onDone: () => void,
-): void {
-  bottom.innerHTML = ''
-
-  const prizeIndex = selectPrize(prizes)
-  const prize = prizes[prizeIndex]
-  const angle = calcSpinAngle(prizeIndex, prizes.length)
-
-  spinWheel(wheelWrap, angle).then(() => {
-    // Save spin (fire and forget)
-    onSave(prizeIndex)
-
-    // Full-screen reveal
-    showReveal(prize, config, onDone)
-  })
-}
-
-function showReveal(
+export function showReveal(
   prize: Prize,
   _config: WheelConfig,
   onDone: () => void,

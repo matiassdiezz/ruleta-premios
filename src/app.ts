@@ -1,13 +1,12 @@
 import type { WheelConfig } from './config'
 import type { Prize } from './prizes'
+import { selectPrize } from './prizes'
 import { saveSpin } from './db'
 import { createWheelSvg, createPointer } from './wheel-renderer'
 import { mountWelcomeChrome, unmountWelcomeChrome } from './screens/welcome'
-import { mountSpinChrome } from './screens/spin'
+import { showReveal } from './screens/spin'
 
-type Screen = 'welcome' | 'spin'
-
-const INACTIVITY_MS = 60_000
+type State = 'idle' | 'dragging' | 'spinning'
 
 export function createWheelApp(
   root: HTMLElement,
@@ -15,8 +14,9 @@ export function createWheelApp(
   prizes: Prize[],
   deviceId: string,
 ) {
-  let currentScreen: Screen = 'welcome'
-  let inactivityTimer: ReturnType<typeof setTimeout> | null = null
+  let state: State = 'idle'
+  let currentRotation = 0
+  let prevPointerAngle = 0
 
   // --- Persistent wheel (never destroyed) ---
   const wrapper = document.createElement('div')
@@ -43,71 +43,129 @@ export function createWheelApp(
   wrapper.append(chromeTop, wheelContainer, chromeBottom)
   root.appendChild(wrapper)
 
-  // --- State machine ---
-  function resetInactivityTimer() {
-    if (inactivityTimer) clearTimeout(inactivityTimer)
-    if (currentScreen !== 'welcome') {
-      inactivityTimer = setTimeout(() => goTo('welcome'), INACTIVITY_MS)
-    }
+  // --- Helpers ---
+  function getPointerAngle(e: PointerEvent): number {
+    const rect = wheelContainer.getBoundingClientRect()
+    const cx = rect.left + rect.width / 2
+    const cy = rect.top + rect.height / 2
+    return Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI)
   }
 
-  function goTo(screen: Screen) {
-    currentScreen = screen
-    resetInactivityTimer()
-    renderScreen(screen)
+  function enterIdle() {
+    state = 'idle'
+
+    // Signal any active reveal to clean up
+    document.dispatchEvent(new Event('wheel-reset'))
+
+    // Reset wheel rotation
+    wheelWrap.style.transition = 'none'
+    wheelWrap.style.transform = ''
+    wheelWrap.style.animation = ''
+    wheelWrap.className = 'wheel-idle'
+
+    // Show idle emanating rings
+    wrapper.classList.add('wheel-idle-active')
+    wheelContainer.style.cursor = 'grab'
+
+    mountWelcomeChrome(chromeTop, chromeBottom, config)
   }
 
-  function renderScreen(screen: Screen) {
-    switch (screen) {
-      case 'welcome':
-        // Signal any active reveal to clean up
-        document.dispatchEvent(new Event('wheel-reset'))
+  function releaseAndSpin() {
+    state = 'spinning'
+    wheelContainer.style.cursor = ''
 
-        // Reset wheel rotation
-        wheelWrap.style.transition = 'none'
-        wheelWrap.style.transform = ''
-        wheelWrap.className = 'wheel-idle'
+    // Select prize
+    const prizeIndex = selectPrize(prizes)
+    const prize = prizes[prizeIndex]
 
-        // Show idle emanating rings
-        wrapper.classList.add('wheel-idle-active')
+    // Calculate landing angle
+    const segAngle = 360 / prizes.length
+    const segCenter = prizeIndex * segAngle + segAngle / 2
+    const targetOffset = 360 - segCenter
+    const jitter = (Math.random() - 0.5) * segAngle * 0.55
 
-        mountWelcomeChrome(chromeTop, chromeBottom, config, wrapper, () => {
-          unmountWelcomeChrome(chromeTop, chromeBottom, () => goTo('spin'))
-        })
-        break
+    const fullRotations = (6 + Math.floor(Math.random() * 3)) * 360
+    const normalizedCurrent = ((currentRotation % 360) + 360) % 360
+    let needed = targetOffset + jitter - normalizedCurrent
+    if (needed < 0) needed += 360
 
-      case 'spin':
-        wrapper.classList.remove('wheel-idle-active')
+    const finalAngle = currentRotation + fullRotations + needed
 
-        // Stop idle, keep current position
-        wheelWrap.className = ''
+    // Spin!
+    wheelWrap.style.transition = 'transform 5.5s cubic-bezier(0.12, 0, 0.05, 1)'
+    wheelWrap.style.transform = `rotate(${finalAngle}deg)`
 
-        mountSpinChrome(chromeBottom, wheelContainer, wheelWrap, prizes, config,
-          async (prizeIndex) => {
-            const prize = prizes[prizeIndex]
-            await saveSpin({
-              id: crypto.randomUUID(),
-              eventId: config.eventId,
-              prizeId: prize.id,
-              prizeLabel: prize.label,
-              deviceId,
-              createdAt: new Date().toISOString(),
-              synced: 0,
-            })
-          },
-          () => goTo('welcome'),
-        )
-        break
-    }
+    wheelWrap.addEventListener('transitionend', () => {
+      saveSpin({
+        id: crypto.randomUUID(),
+        eventId: config.eventId,
+        prizeId: prize.id,
+        prizeLabel: prize.label,
+        deviceId,
+        createdAt: new Date().toISOString(),
+        synced: 0,
+      })
+      showReveal(prize, config, () => enterIdle())
+    }, { once: true })
   }
 
-  document.addEventListener('pointerdown', resetInactivityTimer)
-  renderScreen('welcome')
+  // --- Drag handlers (pointer capture keeps events on wheelContainer) ---
+  wheelContainer.addEventListener('pointerdown', (e) => {
+    if (state !== 'idle') return
+    e.preventDefault()
+    state = 'dragging'
+
+    // Freeze idle animation at current visual position
+    const computed = getComputedStyle(wheelWrap)
+    const matrix = new DOMMatrix(computed.transform)
+    currentRotation = Math.atan2(matrix.b, matrix.a) * (180 / Math.PI)
+
+    wheelWrap.className = ''
+    wheelWrap.style.animation = 'none'
+    wheelWrap.style.transition = 'none'
+    wheelWrap.style.transform = `rotate(${currentRotation}deg)`
+    wrapper.classList.remove('wheel-idle-active')
+
+    // Fade out welcome chrome
+    unmountWelcomeChrome(chromeTop, chromeBottom, () => {})
+
+    prevPointerAngle = getPointerAngle(e)
+    wheelContainer.style.cursor = 'grabbing'
+    wheelContainer.setPointerCapture(e.pointerId)
+  })
+
+  wheelContainer.addEventListener('pointermove', (e) => {
+    if (state !== 'dragging') return
+
+    const angle = getPointerAngle(e)
+    let delta = angle - prevPointerAngle
+    if (delta > 180) delta -= 360
+    if (delta < -180) delta += 360
+
+    currentRotation += delta
+    wheelWrap.style.transform = `rotate(${currentRotation}deg)`
+
+    prevPointerAngle = angle
+  })
+
+  wheelContainer.addEventListener('pointerup', (e) => {
+    if (state !== 'dragging') return
+    try { wheelContainer.releasePointerCapture(e.pointerId) } catch {}
+    releaseAndSpin()
+  })
+
+  wheelContainer.addEventListener('pointercancel', (e) => {
+    if (state !== 'dragging') return
+    try { wheelContainer.releasePointerCapture(e.pointerId) } catch {}
+    releaseAndSpin()
+  })
+
+  // --- Start ---
+  enterIdle()
 }
 
 function getWheelSize(): number {
   const vw = window.innerWidth
   const vh = window.innerHeight
-  // iPad-friendly: use more of the viewport
   return Math.min(vw * 0.82, vh * 0.52, 600)
 }
