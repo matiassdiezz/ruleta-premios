@@ -166,6 +166,11 @@ export function createWheelSvg(prizes: Prize[], size: number): SVGSVGElement {
     const ty = cy + textR * Math.sin(midRad)
     const fontSize = Math.min(size / 15, 22)
 
+    // Flip text 180° when on the left half so it's never upside-down
+    const normalizedAngle = ((midAngle % 360) + 360) % 360
+    const flip = normalizedAngle > 90 && normalizedAngle < 270
+    const textRotation = flip ? midAngle + 180 : midAngle
+
     // Shadow text
     const shadow = document.createElementNS(SVG_NS, 'text')
     shadow.setAttribute('x', String(tx + 1))
@@ -176,7 +181,7 @@ export function createWheelSvg(prizes: Prize[], size: number): SVGSVGElement {
     shadow.setAttribute('font-size', String(fontSize))
     shadow.setAttribute('font-weight', '900')
     shadow.setAttribute('font-family', "'Nunito Sans', sans-serif")
-    shadow.setAttribute('transform', `rotate(${midAngle}, ${tx + 1}, ${ty + 1})`)
+    shadow.setAttribute('transform', `rotate(${textRotation}, ${tx + 1}, ${ty + 1})`)
     shadow.textContent = prizes[i].shortLabel
     svg.appendChild(shadow)
 
@@ -190,7 +195,7 @@ export function createWheelSvg(prizes: Prize[], size: number): SVGSVGElement {
     text.setAttribute('font-size', String(fontSize))
     text.setAttribute('font-weight', '900')
     text.setAttribute('font-family', "'Nunito Sans', sans-serif")
-    text.setAttribute('transform', `rotate(${midAngle}, ${tx}, ${ty})`)
+    text.setAttribute('transform', `rotate(${textRotation}, ${tx}, ${ty})`)
     text.textContent = prizes[i].shortLabel
     svg.appendChild(text)
   }

@@ -222,6 +222,16 @@ body {
   display: block;
 }
 
+.wheel-pointer {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+}
+
 /* ---- Idle emanating rings ---- */
 .wheel-idle-active .wheel-container::before,
 .wheel-idle-active .wheel-container::after {
