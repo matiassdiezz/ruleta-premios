@@ -92,10 +92,13 @@ export function createWheelApp(
     const rotationCount = Math.round(2 + 8 * t)
     const duration = 2.5 + 3.5 * t
 
-    const fullRotations = rotationCount * 360
+    const direction = angularVelocity >= 0 ? 1 : -1
+    const fullRotations = direction * rotationCount * 360
     const normalizedCurrent = ((currentRotation % 360) + 360) % 360
-    let needed = targetOffset + jitter - normalizedCurrent
-    if (needed < 0) needed += 360
+    const target = (((targetOffset + jitter) % 360) + 360) % 360
+    let needed = target - normalizedCurrent
+    if (direction > 0 && needed < 0) needed += 360
+    if (direction < 0 && needed > 0) needed -= 360
 
     const finalAngle = currentRotation + fullRotations + needed
 
