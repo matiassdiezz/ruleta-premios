@@ -17,6 +17,8 @@ export function createWheelApp(
   let state: State = 'idle'
   let currentRotation = 0
   let prevPointerAngle = 0
+  let prevTime = 0
+  let angularVelocity = 0
 
   // --- Persistent wheel (never destroyed) ---
   const wrapper = document.createElement('div')
@@ -84,7 +86,13 @@ export function createWheelApp(
     const targetOffset = 360 - segCenter
     const jitter = (Math.random() - 0.5) * segAngle * 0.55
 
-    const fullRotations = (6 + Math.floor(Math.random() * 3)) * 360
+    // Scale rotations + duration based on drag speed
+    const speed = Math.max(Math.abs(angularVelocity), 120)
+    const t = Math.min(speed / 800, 1)
+    const rotationCount = Math.round(2 + 8 * t)
+    const duration = 2.5 + 3.5 * t
+
+    const fullRotations = rotationCount * 360
     const normalizedCurrent = ((currentRotation % 360) + 360) % 360
     let needed = targetOffset + jitter - normalizedCurrent
     if (needed < 0) needed += 360
@@ -92,7 +100,7 @@ export function createWheelApp(
     const finalAngle = currentRotation + fullRotations + needed
 
     // Spin!
-    wheelWrap.style.transition = 'transform 5.5s cubic-bezier(0.12, 0, 0.05, 1)'
+    wheelWrap.style.transition = `transform ${duration.toFixed(1)}s cubic-bezier(0.12, 0, 0.05, 1)`
     wheelWrap.style.transform = `rotate(${finalAngle}deg)`
 
     wheelWrap.addEventListener('transitionend', () => {
@@ -130,6 +138,8 @@ export function createWheelApp(
     unmountWelcomeChrome(chromeTop, chromeBottom, () => {})
 
     prevPointerAngle = getPointerAngle(e)
+    prevTime = performance.now()
+    angularVelocity = 0
     wheelContainer.style.cursor = 'grabbing'
     wheelContainer.setPointerCapture(e.pointerId)
   })
@@ -145,7 +155,14 @@ export function createWheelApp(
     currentRotation += delta
     wheelWrap.style.transform = `rotate(${currentRotation}deg)`
 
+    const now = performance.now()
+    const dt = now - prevTime
+    if (dt > 0) {
+      const instantVel = (delta / dt) * 1000
+      angularVelocity = angularVelocity * 0.6 + instantVel * 0.4
+    }
     prevPointerAngle = angle
+    prevTime = now
   })
 
   wheelContainer.addEventListener('pointerup', (e) => {
