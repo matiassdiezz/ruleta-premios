@@ -27,10 +27,17 @@ export function mountWelcomeChrome(
   cta.textContent = 'GIRA Y GANA'
   bottom.appendChild(cta)
 
-  // Hint
-  const hint = document.createElement('p')
+  // Hint pill with pulsing dot
+  const hint = document.createElement('div')
   hint.className = 'wheel-welcome-hint wheel-fade-in'
-  hint.textContent = 'Toca para jugar'
+
+  const dot = document.createElement('span')
+  dot.className = 'wheel-hint-dot'
+
+  const text = document.createElement('span')
+  text.textContent = 'Toca para jugar'
+
+  hint.append(dot, text)
   bottom.appendChild(hint)
 
   // Full-screen tap

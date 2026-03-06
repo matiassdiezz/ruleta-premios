@@ -1,54 +1,110 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800;6..12,900&display=swap');
 @import "tailwindcss";
 
+/* ---- Design Tokens ---- */
 :root {
-  --wheel-bg: #0a0a1a;
+  --wheel-bg: #06060f;
   --wheel-text: #ffffff;
   --wheel-accent: #f59e0b;
 }
 
-html, body {
+/* ---- Base ---- */
+html {
   height: 100%;
+  overflow: hidden;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   font-family: 'Nunito Sans', sans-serif;
   background: var(--wheel-bg);
+  color: var(--wheel-text);
 }
 
-body {
-  background:
-    radial-gradient(ellipse at center, rgba(255,255,255,0.04) 0%, transparent 70%),
-    var(--wheel-bg);
+/* ---- Animated ambient blobs ---- */
+.bg-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
 }
 
-/* ---- Persistent layout ---- */
+.bg-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+}
+
+.bg-blob-1 {
+  width: 80vmax;
+  height: 80vmax;
+  top: -35vmax;
+  left: -25vmax;
+  background: radial-gradient(circle, rgba(109, 40, 217, 0.35) 0%, transparent 70%);
+  animation: blobFloat1 20s ease-in-out infinite alternate;
+}
+
+.bg-blob-2 {
+  width: 65vmax;
+  height: 65vmax;
+  bottom: -28vmax;
+  right: -18vmax;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.22) 0%, transparent 70%);
+  animation: blobFloat2 25s ease-in-out infinite alternate;
+}
+
+@keyframes blobFloat1 {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(14vw, 12vh) scale(1.25); }
+}
+
+@keyframes blobFloat2 {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(-10vw, -10vh) scale(1.2); }
+}
+
+/* ---- Layout ---- */
 .wheel-layout {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 24px;
+  gap: 28px;
   min-height: 100dvh;
-  padding: 24px;
+  padding: 32px 24px;
 }
 
-.wheel-chrome-top,
+.wheel-chrome-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+}
+
 .wheel-chrome-bottom {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  min-height: 24px;
+  gap: 12px;
+  min-height: 80px;
 }
 
-/* ---- Fade in / out for chrome elements ---- */
+/* ---- Fade animations ---- */
 .wheel-fade-in {
-  animation: wheelFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: wheelFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes wheelFadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .wheel-fade-out {
@@ -57,34 +113,99 @@ body {
 
 @keyframes wheelFadeOut {
   from { opacity: 1; transform: translateY(0); }
-  to { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 0; transform: translateY(-10px); }
 }
 
-/* ---- Welcome chrome ---- */
+/* ---- Logo ---- */
 .wheel-welcome-logo {
   width: 160px;
-  max-height: 56px;
+  max-height: 64px;
   object-fit: contain;
-  opacity: 0.8;
+  opacity: 0;
+  filter: brightness(1.2) drop-shadow(0 0 12px rgba(255, 255, 255, 0.2));
 }
 
+.wheel-welcome-logo.wheel-fade-in {
+  animation: logoReveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+}
+
+@keyframes logoReveal {
+  from { opacity: 0; transform: translateY(-12px) scale(0.92); }
+  to   { opacity: 0.9; transform: translateY(0) scale(1); }
+}
+
+/* ---- CTA headline — shimmer gradient text ---- */
 .wheel-welcome-cta {
-  font-size: clamp(28px, 6vw, 44px);
+  font-size: clamp(32px, 7vw, 54px);
   font-weight: 900;
-  letter-spacing: 0.12em;
-  color: var(--wheel-accent);
+  letter-spacing: 0.1em;
   text-align: center;
-  text-shadow:
-    0 0 20px var(--wheel-accent),
-    0 0 40px rgba(245, 158, 11, 0.3);
+  line-height: 1;
+  background: linear-gradient(
+    120deg,
+    #fff5cc 0%,
+    var(--wheel-accent) 25%,
+    #fde68a 50%,
+    var(--wheel-accent) 75%,
+    #fff5cc 100%
+  );
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmerText 3.5s linear infinite;
+  filter: drop-shadow(0 0 28px rgba(245, 158, 11, 0.45));
 }
 
+@keyframes shimmerText {
+  0%   { background-position: 0% center; }
+  100% { background-position: 250% center; }
+}
+
+/* ---- Hint pill ---- */
 .wheel-welcome-hint {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--wheel-text);
-  opacity: 0.4;
-  animation: tapPrompt 2s ease-in-out infinite;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  animation: hintPulse 3s ease-in-out infinite;
+}
+
+.wheel-hint-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--wheel-accent);
+  flex-shrink: 0;
+  animation: dotPulse 3s ease-in-out infinite;
+}
+
+@keyframes hintPulse {
+  0%, 100% {
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: none;
+    color: rgba(255, 255, 255, 0.45);
+  }
+  50% {
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.07), 0 0 24px rgba(245, 158, 11, 0.15);
+    color: rgba(255, 255, 255, 0.85);
+  }
+}
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 0.5; transform: scale(0.8); }
+  50%       { opacity: 1;   transform: scale(1.3); }
 }
 
 /* ---- Wheel container ---- */
@@ -98,103 +219,189 @@ body {
 
 .wheel-svg {
   border-radius: 50%;
-  box-shadow:
-    0 0 0 4px rgba(255, 255, 255, 0.15),
-    0 0 30px rgba(100, 150, 255, 0.15),
-    0 0 60px rgba(100, 150, 255, 0.08);
+  display: block;
 }
 
-.wheel-pointer {
+/* ---- Idle emanating rings ---- */
+.wheel-idle-active .wheel-container::before,
+.wheel-idle-active .wheel-container::after {
+  content: '';
   position: absolute;
-  top: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  display: flex;
-  justify-content: center;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1.5px solid var(--wheel-accent);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.wheel-idle-active .wheel-container::before {
+  animation: ringEmanate 3.5s ease-out infinite;
+}
+
+.wheel-idle-active .wheel-container::after {
+  animation: ringEmanate 3.5s ease-out 1.75s infinite;
+}
+
+@keyframes ringEmanate {
+  0%   { opacity: 0.65; transform: scale(1); border-color: var(--wheel-accent); }
+  100% { opacity: 0;    transform: scale(1.4); border-color: transparent; }
 }
 
 /* ---- Idle spin ---- */
 .wheel-idle {
-  animation: wheelIdleSpin 30s linear infinite;
+  animation: wheelIdleSpin 36s linear infinite;
 }
 
 @keyframes wheelIdleSpin {
   from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  to   { transform: rotate(360deg); }
 }
 
 /* ---- Spin tap prompt ---- */
 .tap-to-spin {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--wheel-text);
-  animation: tapPrompt 2s ease-in-out infinite;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+  animation: hintPulse 3s ease-in-out infinite;
 }
 
-@keyframes tapPrompt {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 1; }
-}
-
-/* ---- Reveal overlay (over the wheel) ---- */
-.wheel-reveal-overlay {
-  position: absolute;
-  inset: -20%;
+/* ---- Prize reveal — full screen ---- */
+.wheel-reveal-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 20;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.0);
+  background: rgba(6, 6, 15, 0);
   backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
   opacity: 0;
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    background 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    backdrop-filter 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    -webkit-backdrop-filter 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.4s ease;
 }
 
-.wheel-reveal-overlay.wheel-reveal-visible {
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(16px);
+.wheel-reveal-fullscreen.wheel-reveal-visible {
+  background: rgba(6, 6, 15, 0.93);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
   opacity: 1;
 }
 
-.wheel-reveal-card {
-  text-align: center;
+.wheel-reveal-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  padding: 24px;
-  transform: scale(0.8);
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 40px 48px;
+  text-align: center;
+  transform: scale(0.82) translateY(28px);
+  opacity: 0;
+  transition:
+    transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) 0.18s,
+    opacity 0.4s ease 0.18s;
 }
 
-.wheel-reveal-visible .wheel-reveal-card {
-  transform: scale(1);
+.wheel-reveal-visible .wheel-reveal-content {
+  transform: scale(1) translateY(0);
+  opacity: 1;
 }
 
-.wheel-reveal-title {
-  font-size: clamp(28px, 6vw, 48px);
+.wheel-reveal-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--wheel-accent);
+  opacity: 0.8;
+}
+
+.wheel-reveal-icon {
+  font-size: clamp(64px, 12vw, 88px);
+  line-height: 1;
+  animation: iconBounce 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) 0.35s both;
+}
+
+@keyframes iconBounce {
+  from { transform: scale(0.2) rotate(-25deg); opacity: 0; }
+  to   { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.wheel-reveal-prize-name {
+  font-size: clamp(38px, 9vw, 68px);
   font-weight: 900;
-  line-height: 1.1;
-  animation: prizeGlow 1.5s ease-in-out infinite alternate;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  animation: prizeGlow 2s ease-in-out infinite alternate;
 }
 
 .wheel-reveal-desc {
-  font-size: 18px;
-  color: var(--wheel-text);
-  opacity: 0.7;
+  font-size: clamp(14px, 2.5vw, 18px);
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  margin-top: 4px;
 }
 
 .wheel-reveal-badge {
-  margin-top: 4px;
-  padding: 10px 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 10px 28px;
   border-radius: 9999px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--wheel-text);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  opacity: 0.6;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ---- Countdown progress bar ---- */
+.wheel-countdown-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--wheel-accent), #fbbf24, var(--wheel-accent));
+  transform-origin: left center;
+  z-index: 101;
+}
+
+@keyframes countdownShrink {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
+/* ---- Prize glow ---- */
+@keyframes prizeGlow {
+  from {
+    text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+    filter: brightness(1);
+  }
+  to {
+    text-shadow: 0 0 30px currentColor, 0 0 60px currentColor, 0 0 90px currentColor;
+    filter: brightness(1.15);
+  }
 }
 
 /* ---- Confetti ---- */
@@ -203,34 +410,31 @@ body {
   inset: 0;
   pointer-events: none;
   overflow: hidden;
-  z-index: 50;
+  z-index: 103;
 }
 
 .confetti-piece {
   position: absolute;
-  width: 10px;
-  height: 10px;
-  top: -10px;
+  top: -20px;
   animation: confettiFall linear forwards;
 }
 
 @keyframes confettiFall {
-  0% {
-    transform: translateY(0) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100vh) rotate(720deg);
-    opacity: 0;
-  }
+  0%   { transform: translateY(0) rotate(0deg) translateX(0); opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateY(108vh) rotate(var(--rot-end, 720deg)) translateX(var(--drift, 0px)); opacity: 0; }
 }
 
-/* ---- Prize glow ---- */
-@keyframes prizeGlow {
-  from {
-    text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
-  }
-  to {
-    text-shadow: 0 0 30px currentColor, 0 0 60px currentColor, 0 0 80px currentColor;
-  }
+.confetti-ribbon {
+  position: absolute;
+  top: -24px;
+  width: 4px;
+  border-radius: 2px;
+  animation: ribbonFall linear forwards;
+}
+
+@keyframes ribbonFall {
+  0%   { transform: translateY(0) rotateX(0deg) rotateZ(0deg) translateX(0); opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateY(108vh) rotateX(540deg) rotateZ(var(--rot-end, 360deg)) translateX(var(--drift, 0px)); opacity: 0; }
 }

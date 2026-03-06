@@ -60,10 +60,16 @@ export function createWheelApp(
   function renderScreen(screen: Screen) {
     switch (screen) {
       case 'welcome':
+        // Signal any active reveal to clean up
+        document.dispatchEvent(new Event('wheel-reset'))
+
         // Reset wheel rotation
         wheelWrap.style.transition = 'none'
         wheelWrap.style.transform = ''
         wheelWrap.className = 'wheel-idle'
+
+        // Show idle emanating rings
+        wrapper.classList.add('wheel-idle-active')
 
         mountWelcomeChrome(chromeTop, chromeBottom, config, wrapper, () => {
           unmountWelcomeChrome(chromeTop, chromeBottom, () => goTo('spin'))
@@ -71,6 +77,8 @@ export function createWheelApp(
         break
 
       case 'spin':
+        wrapper.classList.remove('wheel-idle-active')
+
         // Stop idle, keep current position
         wheelWrap.className = ''
 
