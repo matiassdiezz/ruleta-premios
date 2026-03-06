@@ -7,6 +7,7 @@ export function mountWelcomeChrome(
   top: HTMLElement,
   bottom: HTMLElement,
   config: WheelConfig,
+  hintText = 'Arrastra para girar',
 ): void {
   top.innerHTML = ''
   bottom.innerHTML = ''
@@ -33,7 +34,7 @@ export function mountWelcomeChrome(
   dot.className = 'wheel-hint-dot'
 
   const text = document.createElement('span')
-  text.textContent = 'Arrastrá para girar'
+  text.textContent = hintText
 
   hint.append(dot, text)
   bottom.appendChild(hint)
