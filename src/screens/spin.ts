@@ -9,12 +9,13 @@ const RIBBON_COUNT = 40
 
 /** Emoji icon for each prize category */
 const PRIZE_ICONS: Record<string, string> = {
-  gorra: '🧢',
-  llavero: '🔑',
-  sticker: '✨',
-  'descuento-10': '💫',
-  'descuento-20': '🌟',
-  remera: '👕',
+  'kit-mantenimiento': '🏆',
+  lubricante: '🛢️',
+  aditivo: '⚙️',
+  'descuento-30': '💎',
+  'descuento-15': '🔥',
+  'gorra-mannol': '🧢',
+  'llavero-mannol': '🔑',
 }
 
 /**
@@ -100,7 +101,7 @@ function showReveal(
   // Badge
   const badge = document.createElement('div')
   badge.className = 'wheel-reveal-badge'
-  badge.textContent = 'Retiralo en el stand'
+  badge.textContent = 'Mostrá esta pantalla en el stand'
 
   content.append(label, icon, title, desc, badge)
   overlay.appendChild(content)
@@ -148,7 +149,7 @@ function createConfetti(prizeColor: string): HTMLDivElement {
 
   const palette = [
     prizeColor,
-    '#FF6B35', '#2EC4B6', '#E71D36', '#7B2FBE', '#FFD23F', '#1B998B',
+    '#C62828', '#1565C0', '#2E7D32', '#6A1B9A', '#E65100', '#00838F', '#FFD300',
     '#ffffff', '#fde68a',
   ]
 

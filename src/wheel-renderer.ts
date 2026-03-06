@@ -51,7 +51,7 @@ export function createWheelSvg(prizes: Prize[], size: number): SVGSVGElement {
   hubGrad.setAttribute('y2', '100%')
   const hg1 = document.createElementNS(SVG_NS, 'stop')
   hg1.setAttribute('offset', '0%')
-  hg1.setAttribute('stop-color', '#ffe566')
+  hg1.setAttribute('stop-color', '#FFD300')
   const hg2 = document.createElementNS(SVG_NS, 'stop')
   hg2.setAttribute('offset', '50%')
   hg2.setAttribute('stop-color', '#d4920e')
@@ -70,7 +70,7 @@ export function createWheelSvg(prizes: Prize[], size: number): SVGSVGElement {
   ringGrad.setAttribute('y2', '100%')
   const rg1 = document.createElementNS(SVG_NS, 'stop')
   rg1.setAttribute('offset', '0%')
-  rg1.setAttribute('stop-color', '#ffe566')
+  rg1.setAttribute('stop-color', '#FFD300')
   const rg2 = document.createElementNS(SVG_NS, 'stop')
   rg2.setAttribute('offset', '40%')
   rg2.setAttribute('stop-color', '#c8960c')
@@ -79,7 +79,7 @@ export function createWheelSvg(prizes: Prize[], size: number): SVGSVGElement {
   rg3.setAttribute('stop-color', '#8b6000')
   const rg4 = document.createElementNS(SVG_NS, 'stop')
   rg4.setAttribute('offset', '100%')
-  rg4.setAttribute('stop-color', '#ffe566')
+  rg4.setAttribute('stop-color', '#FFD300')
   ringGrad.append(rg1, rg2, rg3, rg4)
   defs.appendChild(ringGrad)
 
@@ -92,7 +92,7 @@ export function createWheelSvg(prizes: Prize[], size: number): SVGSVGElement {
   ptrGrad.setAttribute('y2', '100%')
   const pg1 = document.createElementNS(SVG_NS, 'stop')
   pg1.setAttribute('offset', '0%')
-  pg1.setAttribute('stop-color', '#ffe566')
+  pg1.setAttribute('stop-color', '#FFD300')
   const pg2 = document.createElementNS(SVG_NS, 'stop')
   pg2.setAttribute('offset', '100%')
   pg2.setAttribute('stop-color', '#c8800a')
@@ -222,7 +222,7 @@ export function createWheelSvg(prizes: Prize[], size: number): SVGSVGElement {
     dot.setAttribute('cx', String(dx))
     dot.setAttribute('cy', String(dy))
     dot.setAttribute('r', '3.5')
-    dot.setAttribute('fill', '#ffe566')
+    dot.setAttribute('fill', '#FFD300')
     dot.setAttribute('stroke', 'rgba(0,0,0,0.3)')
     dot.setAttribute('stroke-width', '1')
     svg.appendChild(dot)
@@ -320,7 +320,7 @@ export function createPointer(size: number): HTMLDivElement {
   gs1.setAttribute('stop-color', '#fff0a0')
   const gs2 = document.createElementNS(SVG_NS, 'stop')
   gs2.setAttribute('offset', '55%')
-  gs2.setAttribute('stop-color', '#f59e0b')
+  gs2.setAttribute('stop-color', '#FFD300')
   const gs2b = document.createElementNS(SVG_NS, 'stop')
   gs2b.setAttribute('offset', '100%')
   gs2b.setAttribute('stop-color', '#b06000')
@@ -349,7 +349,7 @@ export function createPointer(size: number): HTMLDivElement {
   svg.appendChild(shine)
 
   // Drop shadow via filter
-  svg.style.filter = 'drop-shadow(0 6px 12px rgba(0,0,0,0.6)) drop-shadow(0 0 8px rgba(245,158,11,0.4))'
+  svg.style.filter = 'drop-shadow(0 6px 12px rgba(0,0,0,0.6)) drop-shadow(0 0 8px rgba(255,211,0,0.4))'
 
   wrapper.appendChild(svg)
   return wrapper

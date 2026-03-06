@@ -12,11 +12,11 @@ export default defineConfig({
         navigateFallback: null,
       },
       manifest: {
-        name: 'Ruleta de Premios',
-        short_name: 'Ruleta',
-        description: 'Ruleta de premios para eventos presenciales',
-        theme_color: '#0a0a1a',
-        background_color: '#0a0a1a',
+        name: 'Mannol Ruleta',
+        short_name: 'Mannol',
+        description: 'Ruleta de premios Mannol Argentina',
+        theme_color: '#08081a',
+        background_color: '#08081a',
         display: 'standalone',
         orientation: 'portrait',
         icons: [

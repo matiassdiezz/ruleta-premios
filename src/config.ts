@@ -13,11 +13,11 @@ const CONFIG_KEY = 'wheel-config'
 
 const DEFAULTS: WheelConfig = {
   eventId: 'default',
-  brand: 'diezypunto',
-  logoUrl: '/wheel/logo.png',
-  bgColor: '#0a0a1a',
+  brand: 'Mannol Argentina',
+  logoUrl: '/mannol-logo.png',
+  bgColor: '#08081a',
   textColor: '#ffffff',
-  accentColor: '#f59e0b',
+  accentColor: '#FFD300',
 }
 
 export async function loadWheelConfig(): Promise<WheelConfig> {

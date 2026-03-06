@@ -1,15 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <circle cx="32" cy="32" r="32" fill="#06060f"/>
-  <!-- Wheel segments (simplified 6-segment wheel) -->
-  <path d="M32 32 L32 4 A28 28 0 0 1 56.2 18 Z" fill="#FF6B35"/>
-  <path d="M32 32 L56.2 18 A28 28 0 0 1 56.2 46 Z" fill="#FFD23F"/>
-  <path d="M32 32 L56.2 46 A28 28 0 0 1 32 60 Z" fill="#2EC4B6"/>
-  <path d="M32 32 L32 60 A28 28 0 0 1 7.8 46 Z" fill="#E71D36"/>
-  <path d="M32 32 L7.8 46 A28 28 0 0 1 7.8 18 Z" fill="#7B2FBE"/>
-  <path d="M32 32 L7.8 18 A28 28 0 0 1 32 4 Z" fill="#1B998B"/>
+  <circle cx="32" cy="32" r="32" fill="#08081a"/>
+  <!-- Wheel segments (simplified 7-segment wheel) -->
+  <path d="M32 32 L32 4 A28 28 0 0 1 49.8 10.5 Z" fill="#C62828"/>
+  <path d="M32 32 L49.8 10.5 A28 28 0 0 1 59.5 27.5 Z" fill="#1565C0"/>
+  <path d="M32 32 L59.5 27.5 A28 28 0 0 1 55.5 48 Z" fill="#2E7D32"/>
+  <path d="M32 32 L55.5 48 A28 28 0 0 1 38 59 Z" fill="#6A1B9A"/>
+  <path d="M32 32 L38 59 A28 28 0 0 1 14 53.5 Z" fill="#E65100"/>
+  <path d="M32 32 L14 53.5 A28 28 0 0 1 5 32 Z" fill="#00838F"/>
+  <path d="M32 32 L5 32 A28 28 0 0 1 32 4 Z" fill="#FFD300"/>
   <!-- Outer ring -->
-  <circle cx="32" cy="32" r="28" fill="none" stroke="#c8960c" stroke-width="2.5"/>
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#FFD300" stroke-width="2.5"/>
   <!-- Center hub -->
-  <circle cx="32" cy="32" r="7" fill="#c8960c"/>
-  <circle cx="32" cy="32" r="4.5" fill="#06060f"/>
+  <circle cx="32" cy="32" r="7" fill="#FFD300"/>
+  <circle cx="32" cy="32" r="4.5" fill="#08081a"/>
 </svg>

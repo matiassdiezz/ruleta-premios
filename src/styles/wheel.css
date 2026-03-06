@@ -5,7 +5,7 @@
 :root {
   --wheel-bg: #06060f;
   --wheel-text: #ffffff;
-  --wheel-accent: #f59e0b;
+  --wheel-accent: #FFD300;
 }
 
 /* ---- Base ---- */
@@ -45,7 +45,7 @@ body {
   height: 80vmax;
   top: -35vmax;
   left: -25vmax;
-  background: radial-gradient(circle, rgba(109, 40, 217, 0.35) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(180, 150, 0, 0.30) 0%, transparent 70%);
   animation: blobFloat1 20s ease-in-out infinite alternate;
 }
 
@@ -54,7 +54,7 @@ body {
   height: 65vmax;
   bottom: -28vmax;
   right: -18vmax;
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.22) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 211, 0, 0.22) 0%, transparent 70%);
   animation: blobFloat2 25s ease-in-out infinite alternate;
 }
 
@@ -154,7 +154,7 @@ body {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: shimmerText 3.5s linear infinite;
-  filter: drop-shadow(0 0 28px rgba(245, 158, 11, 0.45));
+  filter: drop-shadow(0 0 28px rgba(255, 211, 0, 0.45));
 }
 
 @keyframes shimmerText {
@@ -197,8 +197,8 @@ body {
     color: rgba(255, 255, 255, 0.45);
   }
   50% {
-    border-color: rgba(245, 158, 11, 0.4);
-    box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.07), 0 0 24px rgba(245, 158, 11, 0.15);
+    border-color: rgba(255, 211, 0, 0.4);
+    box-shadow: 0 0 0 6px rgba(255, 211, 0, 0.07), 0 0 24px rgba(255, 211, 0, 0.15);
     color: rgba(255, 255, 255, 0.85);
   }
 }
