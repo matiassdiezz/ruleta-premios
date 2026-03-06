@@ -1,0 +1,236 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+:root {
+  --wheel-bg: #0a0a1a;
+  --wheel-text: #ffffff;
+  --wheel-accent: #f59e0b;
+}
+
+html, body {
+  height: 100%;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  font-family: 'Nunito Sans', sans-serif;
+  background: var(--wheel-bg);
+}
+
+body {
+  background:
+    radial-gradient(ellipse at center, rgba(255,255,255,0.04) 0%, transparent 70%),
+    var(--wheel-bg);
+}
+
+/* ---- Persistent layout ---- */
+.wheel-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  min-height: 100dvh;
+  padding: 24px;
+}
+
+.wheel-chrome-top,
+.wheel-chrome-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+}
+
+/* ---- Fade in / out for chrome elements ---- */
+.wheel-fade-in {
+  animation: wheelFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes wheelFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.wheel-fade-out {
+  animation: wheelFadeOut 0.25s ease-in forwards;
+}
+
+@keyframes wheelFadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-8px); }
+}
+
+/* ---- Welcome chrome ---- */
+.wheel-welcome-logo {
+  width: 160px;
+  max-height: 56px;
+  object-fit: contain;
+  opacity: 0.8;
+}
+
+.wheel-welcome-cta {
+  font-size: clamp(28px, 6vw, 44px);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: var(--wheel-accent);
+  text-align: center;
+  text-shadow:
+    0 0 20px var(--wheel-accent),
+    0 0 40px rgba(245, 158, 11, 0.3);
+}
+
+.wheel-welcome-hint {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--wheel-text);
+  opacity: 0.4;
+  animation: tapPrompt 2s ease-in-out infinite;
+}
+
+/* ---- Wheel container ---- */
+.wheel-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.wheel-svg {
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 4px rgba(255, 255, 255, 0.15),
+    0 0 30px rgba(100, 150, 255, 0.15),
+    0 0 60px rgba(100, 150, 255, 0.08);
+}
+
+.wheel-pointer {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+}
+
+/* ---- Idle spin ---- */
+.wheel-idle {
+  animation: wheelIdleSpin 30s linear infinite;
+}
+
+@keyframes wheelIdleSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ---- Spin tap prompt ---- */
+.tap-to-spin {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--wheel-text);
+  animation: tapPrompt 2s ease-in-out infinite;
+}
+
+@keyframes tapPrompt {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* ---- Reveal overlay (over the wheel) ---- */
+.wheel-reveal-overlay {
+  position: absolute;
+  inset: -20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.0);
+  backdrop-filter: blur(0px);
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wheel-reveal-overlay.wheel-reveal-visible {
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(16px);
+  opacity: 1;
+}
+
+.wheel-reveal-card {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px;
+  transform: scale(0.8);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wheel-reveal-visible .wheel-reveal-card {
+  transform: scale(1);
+}
+
+.wheel-reveal-title {
+  font-size: clamp(28px, 6vw, 48px);
+  font-weight: 900;
+  line-height: 1.1;
+  animation: prizeGlow 1.5s ease-in-out infinite alternate;
+}
+
+.wheel-reveal-desc {
+  font-size: 18px;
+  color: var(--wheel-text);
+  opacity: 0.7;
+}
+
+.wheel-reveal-badge {
+  margin-top: 4px;
+  padding: 10px 24px;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--wheel-text);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  opacity: 0.6;
+}
+
+/* ---- Confetti ---- */
+.confetti-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 50;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: -10px;
+  animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* ---- Prize glow ---- */
+@keyframes prizeGlow {
+  from {
+    text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+  }
+  to {
+    text-shadow: 0 0 30px currentColor, 0 0 60px currentColor, 0 0 80px currentColor;
+  }
+}
